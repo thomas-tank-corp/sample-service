@@ -8,8 +8,9 @@ This package is intended to be used with the `product-fe` package.
 ## Configuration
 
 The app accepts database configuration via these enviornmental variables:
+
 | Variable | Description |
-|--|--|
+|---|---|
 | `DATABASE_HOST` | The DNS name or IP of the Database server |
 | `DATABASE_NAME` | The name of the database to connect to |
 | `DATABASE_USER` | Username of ROLE with access to database defined in `DATABASE_NAME` |
