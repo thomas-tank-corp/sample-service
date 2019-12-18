@@ -1,10 +1,12 @@
+require("../utwr");
 const db = require("../db");
 
+
 console.log("[init_db.js] Initializing database");
-console.log(`[init_db.js] DATABASE_USER="${process.env.DATABASE_USER}"`);
-console.log(`[init_db.js] DATABASE_HOST="${process.env.DATABASE_HOST}"`);
-console.log(`[init_db.js] DATABASE_NAME="${process.env.DATABASE_NAME}"`);
-console.log(`[init_db.js] DATABASE_PORT="${process.env.DATABASE_PORT}"`);
+console.log(`[init_db.js] DATABASE_USER="${process.env.DATABASE_USER || ""}"`);
+console.log(`[init_db.js] DATABASE_HOST="${process.env.DATABASE_HOST || ""}"`);
+console.log(`[init_db.js] DATABASE_NAME="${process.env.DATABASE_NAME || ""}"`);
+console.log(`[init_db.js] DATABASE_PORT="${process.env.DATABASE_PORT || ""}"`);
 
 async function createDb  () {
   await db.query("SET timezone = 'utc'");
@@ -26,7 +28,8 @@ function dbBackoff() {
   function handleError(error, i) {
     if (error.errno === "ECONNREFUSED" && i < 6) {
       i++;
-      console.error(`Cannot connect to DB, backing off and trying again in ${2**i} seconds`);
+      console.error(`[init_db.js] Cannot connect to DB, backing off and trying again in ${2**i} seconds`);
+      console.error(`[init_db.js] Username: "${process.env.DATABASE_USER}", Database Name: "${process.env.DATABASE_NAME}", Database Host: "${process.env.DATABASE_HOST}"`);
       return delay((2**i)*1000).then(() => {
         return createDb().catch((err) => {handleError(err, i)});
       });
