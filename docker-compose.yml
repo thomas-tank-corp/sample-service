@@ -33,7 +33,7 @@ services:
       - "5432"
 
     ports:
-      - "5432:5432"
+      - "5432"
 
     environment:
       POSTGRES_PASSWORD: pgsqlDev01
