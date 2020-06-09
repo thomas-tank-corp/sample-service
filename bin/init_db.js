@@ -2,6 +2,7 @@ const db = require("../db");
 
 
 console.log("[init_db.js] Initializing database");
+console.log(`[init_db.js] CONNECTION_STRING="${process.env.CONNECTION_STRING || ""}"`);
 console.log(`[init_db.js] DATABASE_USER="${process.env.DATABASE_USER || ""}"`);
 console.log(`[init_db.js] DATABASE_HOST="${process.env.DATABASE_HOST || ""}"`);
 console.log(`[init_db.js] DATABASE_NAME="${process.env.DATABASE_NAME || ""}"`);
