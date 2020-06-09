@@ -13,14 +13,6 @@ services:
     depends_on:
       - productdb
 
-    environment:
-      CONNECTION_STRING: postgresql://product_robot:pr0dr0b0t@productdb:5432/product
-      DATABASE_HOST: productdb
-      DATABASE_NAME: product
-      DATABASE_USER: product_robot
-      DATABASE_PASSWORD: "pr0dr0b0t"
-      DATABASE_PORT: 5432
-
   productdb:
     image: postgres:11
 
