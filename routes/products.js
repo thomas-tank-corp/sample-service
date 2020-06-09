@@ -16,7 +16,6 @@ function toProduct(row) {
 }
 
 router.get("/", async (req, res) => {
-  console.log('connectionstring: ', process.env.CONNECTION_STRING)
   const { rows } = await db.query("SELECT id, title, content, created_at FROM products");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.json(rows.map(toProduct));
