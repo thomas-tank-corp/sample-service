@@ -14,10 +14,7 @@ services:
       - productdb
 
     environment:
-      DATABASE_HOST: productdb
-      DATABASE_NAME: product
-      DATABASE_USER: product_robot
-      DATABASE_PASSWORD: "pr0dr0b0t"
+      CONNECTION_STRING: postgresql://product_robot:pr0dr0b0t@productdb:5432/product
 
   productdb:
     image: postgres:11
