@@ -1,9 +1,8 @@
-#!/bin/bash
+#!/bin/sh
 
 # Add:
 # COPY docker-entrypoint.sh ./
-# RUN ["chmod", "+x", "./docker-entrypoint.sh"]
-# ENTRYPOINT ["./docker-entrypoint.sh"]
+# ENTRYPOINT ["/bin/sh", "./docker-entrypoint.sh"]
 # to the Dockerfile
 
 

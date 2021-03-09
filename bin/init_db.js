@@ -3,18 +3,14 @@ const db = require("../db");
 
 console.log("[init_db.js] Initializing database");
 console.log(`[init_db.js] CONNECTION_STRING="${process.env.CONNECTION_STRING || ""}"`);
-console.log(`[init_db.js] DATABASE_USER="${process.env.DATABASE_USER || ""}"`);
-console.log(`[init_db.js] DATABASE_HOST="${process.env.DATABASE_HOST || ""}"`);
-console.log(`[init_db.js] DATABASE_NAME="${process.env.DATABASE_NAME || ""}"`);
-console.log(`[init_db.js] DATABASE_PORT="${process.env.DATABASE_PORT || ""}"`);
 
-async function createDb  () {
-  await db.query("SET timezone = 'utc'");
-  await db.query(`CREATE TABLE IF NOT EXISTS products (
-    id          SERIAL PRIMARY KEY,
-    title       TEXT NOT NULL,
-    content     TEXT NULL,
-    created_at  TIMESTAMP)`);
+function createDb  () {
+  return db.query("SET timezone = 'utc'")
+    .then(() => db.query(`CREATE TABLE IF NOT EXISTS products (
+      id          SERIAL PRIMARY KEY,
+      title       TEXT NOT NULL,
+      content     TEXT NULL,
+      created_at  TIMESTAMP)`));
 }
 
 function delay(timeout) {
@@ -26,10 +22,10 @@ function delay(timeout) {
 function dbBackoff() {
 
   function handleError(error, i) {
-    if (error.errno === "ECONNREFUSED" && i < 6) {
+    // see https://nodejs.org/docs/latest-v14.x/api/errors.html#errors_class_systemerror
+    if (error.code === "ECONNREFUSED" && i < 6) {
       i++;
       console.error(`[init_db.js] Cannot connect to DB, backing off and trying again in ${2**i} seconds`);
-      console.error(`[init_db.js] Username: "${process.env.DATABASE_USER}", Database Name: "${process.env.DATABASE_NAME}", Database Host: "${process.env.DATABASE_HOST}"`);
       return delay((2**i)*1000).then(() => {
         return createDb().catch((err) => {handleError(err, i)});
       });
@@ -40,7 +36,7 @@ function dbBackoff() {
     }
   }
 
-  return createDb().catch((err) => {handleError(err, 0)});
+  return createDb().catch((err) => handleError(err, 0));
 }
 
 dbBackoff()

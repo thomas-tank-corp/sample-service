@@ -1,19 +1,20 @@
 # Base the image on the node base image
-FROM node:10
+FROM node:lts-alpine3.13
 
 # Define container where the app will be placed
 WORKDIR /usr/src/app
 
-# Copy the index.js file into the working directory
-COPY . .
+# Play nicely with caching
+# node ependancies are defined in package.json and package-log.json 
+COPY package*.json ./
+RUN npm install --only=prod
 
-RUN npm install
+COPY . .
 
 # Define which port should be exposed on the container
 EXPOSE 8080
 
-RUN ["chmod", "+x", "./docker-entrypoint.sh"]
-ENTRYPOINT ["./docker-entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "./docker-entrypoint.sh"]
 
 # The command to run when the container starts
 CMD [ "node", "./bin/www" ]
