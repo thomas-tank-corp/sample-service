@@ -1,0 +1,54 @@
+name: Sample CI Pipeline
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-push:
+    name: Build and push image
+    runs-on: ubuntu-latest
+
+    env:
+      IMAGE_NAME: my-sample-service
+      PROJECT_ID: ${{ secrets.PROJECT_ID }}
+      REGISTRY_URL: eu.gcr.io
+      HUMANITEC_ORG: tom
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Build docker image
+      - name: Build image
+        run: docker build --tag $REGISTRY_URL/$PROJECT_ID/$IMAGE_NAME:$GITHUB_SHA .
+
+      # Setup gcloud CLI
+      - uses: google-github-actions/setup-gcloud@master
+        with:
+          service_account_key: ${{ secrets.GCR_DEVOPS_SERVICE_ACCOUNT_KEY }}
+          project_id: ${{ secrets.PROJECT_ID }}
+          export_default_credentials: true
+
+      # Configure docker to use the gcloud command-line tool as a credential helper
+      - run: gcloud auth configure-docker -q
+
+      # Push image to Google Container Registry
+      - name: Push image
+        run: docker push $REGISTRY_URL/$PROJECT_ID/$IMAGE_NAME:$GITHUB_SHA
+
+      # Inform Humanitec about new image
+      - name: Inform Humanitec
+        run: |-
+          curl \\
+            --request POST '<https://api.humanitec.io/orgs/'$HUMANITEC_ORG'/images/'$IMAGE_NAME'/builds>' \\
+            --header 'Authorization: Bearer ${{ secrets.HUMANITEC_TOKEN }}' \\
+            --header 'Content-Type: application/json' \\
+            --data-raw '{ 
+                "branch": "'$GITHUB_BRANCH'",
+                "commit": "'$GITHUB_SHA'",
+                "image": "'$REGISTRY_URL/$PROJECT_ID/$IMAGE_NAME:$GITHUB_SHA'",
+                "tags": ["'$GITHUB_SHA'"]
+            }'
