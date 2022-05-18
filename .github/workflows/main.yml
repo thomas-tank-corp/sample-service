@@ -43,7 +43,7 @@ jobs:
       - name: Inform Humanitec
         run: |-
           curl \\
-            --request POST '<https://api.humanitec.io/orgs/'$HUMANITEC_ORG'/images/'$IMAGE_NAME'/builds>' \\
+            --request POST '<https://app.humanitec.io/orgs/'$HUMANITEC_ORG'/images/'$IMAGE_NAME'/builds>' \\
             --header 'Authorization: Bearer ${{ secrets.HUMANITEC_TOKEN }}' \\
             --header 'Content-Type: application/json' \\
             --data-raw '{ 
