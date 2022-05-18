@@ -42,10 +42,10 @@ jobs:
       # Inform Humanitec about new image
       - name: Inform Humanitec
         run: |-
-          curl \\
-            --request POST "https://api.humanitec.io/orgs/'$HUMANITEC_ORG'/images/'$IMAGE_NAME'/builds" \\
-            --header 'Authorization: Bearer ${{ secrets.HUMANITEC_TOKEN }}' \\
-            --header 'Content-Type: application/json' \\
+          curl \
+            --request POST "https://api.humanitec.io/orgs/'$HUMANITEC_ORG'/images/'$IMAGE_NAME'/builds" \
+            --header 'Authorization: Bearer ${{ secrets.HUMANITEC_TOKEN }}' \
+            --header 'Content-Type: application/json' \
             --data-raw '{ 
                 "branch": "'$GITHUB_BRANCH'",
                 "commit": "'$GITHUB_SHA'",
