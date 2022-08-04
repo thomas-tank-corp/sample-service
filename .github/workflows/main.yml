@@ -15,7 +15,7 @@ jobs:
       IMAGE_NAME: my-sample-service
       PROJECT_ID: ${{ secrets.PROJECT_ID }}
       REGISTRY_URL: eu.gcr.io
-      HUMANITEC_ORG: tom
+      HUMANITEC_ORG: tom-cse-dev
 
     steps:
       - name: Checkout
@@ -43,7 +43,7 @@ jobs:
       - name: Inform Humanitec
         run: |-
           curl \
-            --request POST "https://api.humanitec.io/orgs/'$HUMANITEC_ORG'/images/'$IMAGE_NAME'/builds" \
+            --request POST "https://dev-app.humanitec.io/orgs/'$HUMANITEC_ORG'/images/'$IMAGE_NAME'/builds" \
             --header 'Authorization: Bearer ${{ secrets.HUMANITEC_TOKEN }}' \
             --header 'Content-Type: application/json' \
             --data-raw '{ 
